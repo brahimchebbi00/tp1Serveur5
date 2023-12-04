@@ -13,32 +13,39 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Optional;
 
-//@Service
-public class DevinerImpl implements Deviner {
+@Service
 
+public class DevinerImplV3 implements Deviner {
     private final ClientRepository clientRepository;
 
     /**
      Injection de la dépendance de la base de données par le constructeur     */
-   // @Autowired
-    public DevinerImpl(ClientRepository clientRepository) {
+    @Autowired
+    public DevinerImplV3(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
     @Override
     public String checkNumbre(int estimatedNum, int secretNum, Client client) {
-        try {
-            if (secretNum > estimatedNum) {
-                return estimatedNum + " est plus petit";
-            } else if (secretNum < estimatedNum) {
-                return estimatedNum + " est plus grand";
+        char[] chEst = String.valueOf(estimatedNum).toCharArray();
+        int v=0;
+        int t=0;
+        String chSecret =String.valueOf(secretNum);
+        for (int i=0;i< chEst.length;i++){
+            if (chSecret.contains(chEst[i]+"")){
+                if(chSecret.charAt(i)==chEst[i]){
+                    t++;
+                }
+              else{
+                  v++;
+                }
             }
-            client.setWinner(true);
-            return "vous avez gangner";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
         }
+        if (t==5){
+            client.setWinner(true);
+            return "vous avez ganger";}
+
+        return "t:"+t+"v:"+v;
     }
 
     @Override
